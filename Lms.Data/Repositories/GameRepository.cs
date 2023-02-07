@@ -10,47 +10,50 @@ using System.Threading.Tasks;
 
 namespace Lms.Data.Repositories
 {
-    internal class GameRepository : IGameRepository
+    internal class GameRepository : RepositoryBase<Game>,IGameRepository
     {
-        private LmsApiContext _ctx;
-        public GameRepository(LmsApiContext ctx)
+        public GameRepository(LmsApiContext ctx): base(ctx) { }
+
+
+
+        public PagedList<Game> GetAll(GameParameters gameParameters)
         {
-            _ctx = ctx;
+            var items = FindByCondition(t => t.StartDate.Month >= gameParameters.MinMonth && t.StartDate.Month <= gameParameters.MaxMonth);
+
+            GetByName(ref items, gameParameters.Title);
+
+            return PagedList<Game>.ToPagedList(items.OrderBy(on => on.Title),
+                gameParameters.PageNumber,
+                gameParameters.PageSize);
         }
 
-        public void Add(Game game)
+        private void GetByName(ref IQueryable<Game> games, string name)
         {
-            throw new NotImplementedException();
+            if (!games.Any() || string.IsNullOrWhiteSpace(name))
+            {
+                return;
+            }
+            games = games.Where(t => t.Title.ToLower().Contains(name.ToLower()));
         }
 
-        public Task<bool> AnyAsync(int id)
+        public Game GetById(int id)
         {
-            throw new NotImplementedException();
+            var game = FindByCondition(g =>g.Id.Equals(id)).FirstOrDefault();
+            return game;
+        }
+        public void CreateGame(Game game)
+        {
+            Ctx.Game.Add(game);
         }
 
-        public Task<Game> Get(int id)
+        public void RemoveGame(Game game)
         {
-            throw new NotImplementedException();
+            Ctx.Game.Remove(game);
         }
 
-        public Task<IEnumerable<Game>> GetAll()
+        public void UpdateGame(Game game)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<Game>> GetAllAsync()
-        {
-            return await _ctx.Game.ToListAsync();
-        }
-
-        public void Remove(Game game)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Game game)
-        {
-            throw new NotImplementedException();
+            Ctx.Game.Update(game);
         }
     }
 }

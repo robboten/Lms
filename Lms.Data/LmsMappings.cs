@@ -15,6 +15,8 @@ namespace Lms.Data
         {
             CreateMap<Game, GameDto>();
             CreateMap<Tournament, TournamentDto>();
+            CreateMap<PagedList<Tournament>, PaginationMetaData>();
+            CreateMap<PagedList<Game>, PaginationMetaData>();
         }
     }
 }
