@@ -10,8 +10,17 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 <ul>
-@foreach (var item in Model)
-        {
-    <li>@Html.DisplayFor(modelItem => item.Title)</li>
-        }
+    @foreach (var item in Model)
+    {
+        <li>
+            @Html.DisplayFor(modelItem => item.Title)
+            <ul>
+                @foreach (var g in item.Games)
+                {
+                    <li>@g.Title</li>
+                }
+
+            </ul>
+        </li>
+    }
 </ul>
