@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Lms.Api.Filters;
 using Lms.Common.Dtos;
-using Lms.Common.Entities;
 using Lms.Core.Models.Entities;
 using Lms.Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -105,7 +104,7 @@ namespace Lms.Api.Controllers
         {
             var newItem = _mapper.Map<Tournament>(dto);
 
-           await _uow.TournamentRepository.CreateTournament(newItem);
+            await _uow.TournamentRepository.CreateTournament(newItem);
             await _uow.CompleteAsync();
 
             return CreatedAtAction(nameof(GetTournament), new { id = newItem.Id }, _mapper.Map<TournamentDto>(newItem));

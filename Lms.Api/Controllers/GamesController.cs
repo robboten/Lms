@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Lms.Common.Dtos;
-using Lms.Common.Entities;
 using Lms.Core.Models.Entities;
 using Lms.Core.Repositories;
 using Microsoft.AspNetCore.Mvc;

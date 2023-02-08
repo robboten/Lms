@@ -1,6 +1,4 @@
-﻿using Lms.Common.Entities;
-using Lms.Common.Helpers;
-using Lms.Core.Models.Entities;
+﻿using Lms.Core.Models.Entities;
 using Lms.Core.Models.Entities.Helpers;
 using Lms.Core.Repositories;
 using Lms.Data.Context;
@@ -106,7 +104,7 @@ namespace Lms.Data.Repositories
         //    throw new NotImplementedException();
         //}
 
-        
+
 
         //public async Task<IEnumerable<Tournament>> GetAllWithGamesAsync()
         //{

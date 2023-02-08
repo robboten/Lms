@@ -1,5 +1,4 @@
-﻿using Lms.Common.Entities;
-using Lms.Core.Models.Entities;
+﻿using Lms.Core.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lms.Data.Context

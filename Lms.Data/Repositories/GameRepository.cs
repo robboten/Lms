@@ -1,6 +1,4 @@
-﻿using Lms.Common.Entities;
-using Lms.Common.Helpers;
-using Lms.Core.Models.Entities;
+﻿using Lms.Core.Models.Entities;
 using Lms.Core.Models.Entities.Helpers;
 using Lms.Core.Repositories;
 using Lms.Data.Context;
@@ -12,7 +10,7 @@ namespace Lms.Data.Repositories
     {
         public GameRepository(LmsApiContext ctx) : base(ctx) { }
 
-        public async Task <PagedList<Game>> GetAllAsync(GameParameters parameters)
+        public async Task<PagedList<Game>> GetAllAsync(GameParameters parameters)
         {
             var items = FindByCondition(t => t.StartDate.Month >= parameters.MinMonth && t.StartDate.Month <= parameters.MaxMonth);
 
