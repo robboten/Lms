@@ -1,5 +1,6 @@
 ﻿using AutoBogus;
 using Bogus;
+using Lms.Common.Entities;
 using Lms.Core.Models.Entities;
 using Lms.Data.Context;
 using System;

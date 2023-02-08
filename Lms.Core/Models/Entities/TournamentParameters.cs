@@ -11,5 +11,7 @@ namespace Lms.Core.Models.Entities
         public uint MinMonth { get; set; } = (uint)DateTime.Now.Month;
         public uint MaxMonth { get; set; } = (uint)DateTime.Now.Month + 12;
         public string Title { get; set; } = string.Empty;
+
+        public bool IncludeGames { get; set; } = true;
     }
 }

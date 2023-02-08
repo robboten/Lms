@@ -1,46 +1,46 @@
-﻿using Lms.Core.Models.Entities;
+﻿using Lms.Common.Entities;
+using Lms.Common.Helpers;
+using Lms.Core.Models.Entities;
+using Lms.Core.Models.Entities.Helpers;
 using Lms.Core.Repositories;
 using Lms.Data.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lms.Data.Repositories
 {
-    internal class GameRepository : RepositoryBase<Game>,IGameRepository
+    internal class GameRepository : RepositoryBase<Game>, IGameRepository
     {
-        public GameRepository(LmsApiContext ctx): base(ctx) { }
+        public GameRepository(LmsApiContext ctx) : base(ctx) { }
 
-
-
-        public PagedList<Game> GetAll(GameParameters gameParameters)
+        public async Task <PagedList<Game>> GetAllAsync(GameParameters parameters)
         {
-            var items = FindByCondition(t => t.StartDate.Month >= gameParameters.MinMonth && t.StartDate.Month <= gameParameters.MaxMonth);
+            var items = FindByCondition(t => t.StartDate.Month >= parameters.MinMonth && t.StartDate.Month <= parameters.MaxMonth);
 
-            GetByName(ref items, gameParameters.Title);
+            items = FilterByString(items, parameters.Title, t => t.Title.ToLower().Contains(parameters.Title.ToLower()));
 
-            return PagedList<Game>.ToPagedList(items.OrderBy(on => on.Title),
-                gameParameters.PageNumber,
-                gameParameters.PageSize);
+            items = OrderBySwitch(items, parameters.SortOrder);
+
+            return await PagedList<Game>.ToPagedList(items,
+                parameters.PageNumber,
+                parameters.PageSize);
         }
 
-        private void GetByName(ref IQueryable<Game> games, string name)
+        private static IQueryable<Game> OrderBySwitch(IQueryable<Game> items, string sortOrder)
         {
-            if (!games.Any() || string.IsNullOrWhiteSpace(name))
+            return sortOrder switch
             {
-                return;
-            }
-            games = games.Where(t => t.Title.ToLower().Contains(name.ToLower()));
+                "nameDesc" => items = items.OrderByDescending(on => on.Title),
+                "dateAsc" => items = items.OrderBy(on => on.StartDate),
+                "dateDesc" => items = items.OrderByDescending(on => on.StartDate),
+                _ => items = items.OrderBy(on => on.Title),
+            };
         }
 
-        public Game GetById(int id)
+        public async Task<Game?> GetByIdAsync(int id)
         {
-            var game = FindByCondition(g =>g.Id.Equals(id)).FirstOrDefault();
-            return game;
+            return await FindByCondition(g => g.Id.Equals(id)).FirstOrDefaultAsync();
         }
+
         public void CreateGame(Game game)
         {
             Ctx.Game.Add(game);
@@ -51,7 +51,7 @@ namespace Lms.Data.Repositories
             Ctx.Game.Remove(game);
         }
 
-        public void UpdateGame(Game game)
+        public void UpdateGame(int id, Game game)
         {
             Ctx.Game.Update(game);
         }

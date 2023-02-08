@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Lms.Api.Filters;
-using Lms.Core.Dtos;
+using Lms.Common.Dtos;
+using Lms.Common.Entities;
 using Lms.Core.Models.Entities;
 using Lms.Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,6 @@ namespace Lms.Api.Controllers
     [ApiController]
     public class TournamentsController : ControllerBase
     {
-        //private readonly LmsApiContext _context;
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
 
@@ -27,21 +27,19 @@ namespace Lms.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament([FromQuery] TournamentParameters tournamentParameters)
         {
-            var tournaments = _uow.TournamentRepository.GetAll(tournamentParameters);
-
-            var tournamentsdto = _mapper.Map<IEnumerable<TournamentDto>>(tournaments);
+            var tournaments = await _uow.TournamentRepository.GetAllAsync(tournamentParameters);
 
             var metadata = _mapper.Map<PaginationMetaData>(tournaments);
 
-            Response.Headers.Add("X-Pagination",JsonConvert.SerializeObject(metadata));
-            return Ok(tournamentsdto);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(_mapper.Map<IEnumerable<TournamentDto>>(tournaments));
         }
 
         // GET: api/Tournaments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tournament>> GetById(int id)
+        public async Task<ActionResult<Tournament>> GetById(int id, [FromQuery] TournamentParameters tournamentParameters)
         {
-            var tournament = _uow.TournamentRepository.GetById(id);
+            var tournament = await _uow.TournamentRepository.GetByIdAsync(id, tournamentParameters);
 
             if (tournament == null)
             {
@@ -49,6 +47,24 @@ namespace Lms.Api.Controllers
             }
 
             return Ok(_mapper.Map<TournamentDto>(tournament));
+        }
+
+        // DELETE: api/Tournaments/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTournament(int id)
+        {
+
+            var tournament = await _uow.TournamentRepository.GetByIdAsync(id);
+
+            if (tournament == null)
+            {
+                return NotFound();
+            }
+
+            _uow.TournamentRepository.RemoveTournament(tournament);
+            await _uow.CompleteAsync();
+
+            return NoContent();
         }
 
         //// PUT: api/Tournaments/5
@@ -85,29 +101,16 @@ namespace Lms.Api.Controllers
         // POST: api/Tournaments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tournament>> PostTournament(Tournament tournament)
+        public async Task<ActionResult<Tournament>> PostTournament(CreateTournamentDto dto)
         {
-            _uow.TournamentRepository.CreateTournament(tournament);
+            var newItem = _mapper.Map<Tournament>(dto);
+
+           await _uow.TournamentRepository.CreateTournament(newItem);
             await _uow.CompleteAsync();
 
-            return CreatedAtAction("GetTournament", new { id = tournament.Id }, _mapper.Map<TournamentDto>(tournament));
+            return CreatedAtAction(nameof(GetTournament), new { id = newItem.Id }, _mapper.Map<TournamentDto>(newItem));
         }
 
-        // DELETE: api/Tournaments/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTournament(int id)
-        {
-            var tournament = _uow.TournamentRepository.GetById(id);
 
-            if (tournament == null)
-            {
-                return NotFound();
-            }
-
-            _uow.TournamentRepository.RemoveTournament(tournament);
-            await _uow.CompleteAsync();
-
-            return NoContent();
-        }
     }
 }

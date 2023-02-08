@@ -1,12 +1,10 @@
-﻿using CodeEvents.Api.Core.Repositories;
+﻿using Lms.Common.Entities;
+using Lms.Common.Helpers;
 using Lms.Core.Models.Entities;
+using Lms.Core.Models.Entities.Helpers;
+using Lms.Core.Repositories;
 using Lms.Data.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lms.Data.Repositories
 {
@@ -17,59 +15,63 @@ namespace Lms.Data.Repositories
         {
         }
 
-        //
-        //methods implemented by base class
-        //
-        public PagedList<Tournament> GetAll(TournamentParameters tournamentParameters)
+
+        //what to await for here? Everything is just IQuerable... 
+        public async Task<PagedList<Tournament>> GetAllAsync(TournamentParameters tournamentParameters)
         {
-            var tournaments= FindByCondition(t=>t.StartDate.Month>=tournamentParameters.MinMonth && t.StartDate.Month <=tournamentParameters.MaxMonth);
+            var tournaments = FindByCondition(t => t.StartDate.Month >= tournamentParameters.MinMonth && t.StartDate.Month <= tournamentParameters.MaxMonth);
 
-            GetByName(ref tournaments, tournamentParameters.Title);
+            //bugs if using ToLowerInvariant
+            tournaments = FilterByString(tournaments, tournamentParameters.Title, t => t.Title.ToLower().Contains(tournamentParameters.Title.ToLower()));
 
-            var sorted = tournaments.OrderBy(on => on.Title);
+            tournaments = IncludeEntity(tournaments, tournamentParameters.IncludeGames, t => t.Games.OrderBy(g => g.StartDate));
 
-            if (!string.IsNullOrWhiteSpace(tournamentParameters.SortOrder))
-            {
-                switch (tournamentParameters.SortOrder)
-                {
-                    //case "nameAsc":
-                    //    sorted = tournaments.OrderBy(on => on.Title);
-                    //    break;
-                    case "nameDesc":
-                        sorted = tournaments.OrderByDescending(on => on.Title);
-                        break;
-                    case "dateAsc":
-                        sorted = tournaments.OrderBy(on => on.StartDate);
-                        break;
-                    case "dateDesc":
-                        sorted = tournaments.OrderByDescending(on => on.StartDate);
-                        break;
-                }
-            }
+            tournaments = OrderBySwitch(tournaments, tournamentParameters.SortOrder);
 
-            return PagedList<Tournament>.ToPagedList(sorted, 
-                tournamentParameters.PageNumber, 
+            return await PagedList<Tournament>.ToPagedList(tournaments,
+                tournamentParameters.PageNumber,
                 tournamentParameters.PageSize);
         }
 
-        private void GetByName(ref IQueryable<Tournament> tournaments, string name)
+        private static IQueryable<Tournament> OrderBySwitch(IQueryable<Tournament> tournaments, string sortOrder)
         {
-            if(!tournaments.Any() || string.IsNullOrWhiteSpace(name))
+            return sortOrder switch
             {
-                return;
-            }
-            tournaments = tournaments.Where(t=>t.Title.ToLower().Contains(name.ToLower()));
+                "nameDesc" => tournaments = tournaments.OrderByDescending(on => on.Title),
+                "dateAsc" => tournaments = tournaments.OrderBy(on => on.StartDate),
+                "dateDesc" => tournaments = tournaments.OrderByDescending(on => on.StartDate),
+                _ => tournaments = tournaments.OrderBy(on => on.Title),
+            };
         }
 
-        public Tournament GetById(int id)
+        public async Task<Tournament?> GetByIdAsync(int id, TournamentParameters tournamentParameters)
         {
-            var tournament = FindByCondition(tournament => tournament.Id.Equals(id)).FirstOrDefault();
+            //var tournament = FindByCondition(tournament => tournament.Id.Equals(id));
+
+            //tournament = IncludeEntity(tournament, tournamentParameters.IncludeGames, t => t.Games.OrderBy(g => g.StartDate).ToList());
+
+            //return tournament.FirstOrDefault();
+
+            var tournament = await FindByCondition(tournament => tournament.Id.Equals(id)).FirstOrDefaultAsync();
+
+            if (tournament == null)
+                return null;
+
+            //the game array is still showing in the json, is there a way to remove it here?
+            if (tournamentParameters.IncludeGames && tournament.Games != null)
+                tournament.Games = tournament.Games.OrderBy(g => g.StartDate).ToList();
+
             return tournament;
         }
 
-        public void CreateTournament(Tournament tournament)
+        public async Task<Tournament?> GetByIdAsync(int id)
         {
-            Ctx.Tournament.Add(tournament);
+            return await FindByCondition(tournament => tournament.Id.Equals(id)).FirstOrDefaultAsync();
+        }
+
+        public async Task CreateTournament(Tournament tournament)
+        {
+            await Ctx.Tournament.AddAsync(tournament);
         }
 
         public void RemoveTournament(Tournament tournament)
@@ -87,58 +89,30 @@ namespace Lms.Data.Repositories
         //
         //older (unused) async methods
         //
-        public async Task<bool> AnyAsync(int id)
-        {
-            return await Ctx.Tournament?.AnyAsync(e => e.Id == id);
-        }
+        //public async Task<bool> AnyAsync(int id)
+        //{
+        //    return await Ctx.Tournament?.AnyAsync(e => e.Id == id);
+        //}
 
-        public async Task<Tournament> GetAsync(int id)
-        {
-            ArgumentNullException.ThrowIfNull(id, nameof(id));
-            return await Ctx.Tournament.FindAsync(id);
+        //public async Task<Tournament> GetByIdAsync(int id)
+        //{
+        //    ArgumentNullException.ThrowIfNull(id, nameof(id));
+        //    return await Ctx.Tournament.FindAsync(id);
 
-        }
+        //}
 
-        public async Task<IEnumerable<Tournament>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
+        //public async Task<IEnumerable<Tournament>> GetAllAsync()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public async Task<PagedList<Tournament>> GetAllAsync(TournamentParameters tournamentParameters)
-        {
-            var tournaments = Ctx.Tournament;
+        
 
-            var sorted = tournaments.OrderBy(on => on.Title);
+        //public async Task<IEnumerable<Tournament>> GetAllWithGamesAsync()
+        //{
+        //    return await Ctx.Tournament.Include(t => t.Games).ToListAsync();
+        //}
 
-            if (!string.IsNullOrWhiteSpace(tournamentParameters.SortOrder))
-            {
-                switch (tournamentParameters.SortOrder)
-                {
-                    //case "nameAsc":
-                    //    sorted = tournaments.OrderBy(on => on.Title);
-                    //    break;
-                    case "nameDesc":
-                        sorted = tournaments.OrderByDescending(on => on.Title);
-                        break;
-                    case "dateAsc":
-                        sorted = tournaments.OrderBy(on => on.StartDate);
-                        break;
-                    case "dateDesc":
-                        sorted = tournaments.OrderByDescending(on => on.StartDate);
-                        break;
-                }
-            }
-
-            return PagedList<Tournament>.ToPagedList(
-                sorted,
-                tournamentParameters.PageNumber, tournamentParameters.PageSize)
-                ;
-        }
-
-        public async Task<IEnumerable<Tournament>> GetAllWithGamesAsync()
-        {
-            return await Ctx.Tournament.Include(t => t.Games).ToListAsync();
-        }
 
     }
 }

@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using Lms.Core.Dtos;
+using Lms.Common.Dtos;
+using Lms.Common.Entities;
 using Lms.Core.Models.Entities;
 using Lms.Core.Repositories;
-using Lms.Data.Context;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Lms.Api.Controllers
@@ -26,7 +25,7 @@ namespace Lms.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGame([FromQuery] GameParameters GameParameters)
         {
-            var Games = _uow.GameRepository.GetAll(GameParameters);
+            var Games = await _uow.GameRepository.GetAllAsync(GameParameters);
 
             var Gamesdto = _mapper.Map<IEnumerable<GameDto>>(Games);
 
@@ -40,7 +39,7 @@ namespace Lms.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetById(int id)
         {
-            var Game = _uow.GameRepository.GetById(id);
+            var Game = await _uow.GameRepository.GetByIdAsync(id);
 
             if (Game == null)
             {
@@ -53,7 +52,7 @@ namespace Lms.Api.Controllers
         //// PUT: api/Games/5
         //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutGame(int id, Game Game)
+        //public async Task<IActionResult> UpdateGame(int id, Game Game)
         //{
         //    if (id != Game.Id)
         //    {
@@ -96,7 +95,7 @@ namespace Lms.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(int id)
         {
-            var Game = _uow.GameRepository.GetById(id);
+            var Game = await _uow.GameRepository.GetByIdAsync(id);
 
             if (Game == null)
             {

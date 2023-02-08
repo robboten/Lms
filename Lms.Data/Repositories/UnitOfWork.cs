@@ -1,5 +1,4 @@
-﻿using CodeEvents.Api.Core.Repositories;
-using Lms.Core.Repositories;
+﻿using Lms.Core.Repositories;
 using Lms.Data.Context;
 using System;
 using System.Collections.Generic;
