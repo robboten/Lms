@@ -1,7 +1,9 @@
-﻿using Lms.Client.Models;
+﻿using Lms.Client.Clients;
+using Lms.Client.Models;
 using Lms.Common.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -9,33 +11,26 @@ namespace Lms.Client.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly HttpClient httpClient;
-        private const string json = "application/json";
 
-        public HomeController(ILogger<HomeController> logger)
+        private const string json = "application/json";
+        //private readonly HttpClient httpClient;
+        private readonly LmsClient httpClient;
+
+        // public HomeController(IHttpClientFactory httpClientFactory)
+        public HomeController(LmsClient lmsClient)
         {
-            httpClient = new HttpClient
-            {
-                BaseAddress = new Uri("https://localhost:7165")
-            };
-            _logger = logger;
+            // httpClient = httpClientFactory.CreateClient("LmsClient");
+            httpClient = lmsClient;
+            //httpClient = new HttpClient
+            //{
+            //    BaseAddress = new Uri("https://localhost:7165")
+            //};
+
         }
 
         public async Task<IActionResult> Index()
         {
-            //var response = await httpClient.GetAsync("api/Tournaments/?IncludeGames=false");
-
-            var request = new HttpRequestMessage(HttpMethod.Get, "api/Tournaments");
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(json));
-
-            var response = await httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-
-            var result = await response.Content.ReadAsStringAsync();
-
-            var tournaments = JsonSerializer.Deserialize<IEnumerable<TournamentDto>>(result, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-
+            var tournaments = await httpClient.GetWithItAsync();
             return View(tournaments);
         }
 

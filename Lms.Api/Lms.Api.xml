@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Lms.Api</name>
+    </assembly>
+    <members>
+        <member name="T:Lms.Api.Controllers.AuthenticationController">
+            <summary>
+            Controller for Authentication token
+            </summary>
+        </member>
+        <member name="T:Lms.Api.Controllers.AuthenticationController.AuthenticationRequestBody">
+            <summary>
+            Request body for Authentication
+            </summary>
+        </member>
+        <member name="P:Lms.Api.Controllers.AuthenticationController.AuthenticationRequestBody.UserName">
+            <summary>
+            User name
+            </summary>
+        </member>
+        <member name="P:Lms.Api.Controllers.AuthenticationController.AuthenticationRequestBody.Password">
+            <summary>
+            Password
+            </summary>
+        </member>
+        <member name="T:Lms.Api.Controllers.AuthenticationController.UserLoginInfo">
+            <summary>
+            User info
+            </summary>
+        </member>
+        <member name="M:Lms.Api.Controllers.AuthenticationController.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Constuctor for auth controller
+            </summary>
+            <param name="configuration"></param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Lms.Api.Controllers.AuthenticationController.Authenticate(Lms.Api.Controllers.AuthenticationController.AuthenticationRequestBody)">
+            <summary>
+            Authenticate user
+            </summary>
+            <param name="authenticationRequestBody"></param>
+            <returns>ActionResult</returns>
+            <response code="200">Security Token for user</response>
+        </member>
+        <member name="T:Lms.Api.Controllers.GamesController">
+            <summary>
+            Api Controller for games
+            </summary>
+        </member>
+        <member name="M:Lms.Api.Controllers.GamesController.#ctor(Lms.Core.Repositories.IUnitOfWork,AutoMapper.IMapper)">
+            <summary>
+            Constructor for controller handling games
+            </summary>
+            <param name="uow"></param>
+            <param name="mapper"></param>
+        </member>
+        <member name="M:Lms.Api.Controllers.GamesController.GetGame(Lms.Core.Models.Entities.GameParameters)">
+            <summary>
+            Get all games
+            </summary>
+            <param name="GameParameters"></param>
+            <returns>IEnumberable of games</returns>
+            <response code="200">Returns list of games</response>
+        </member>
+        <member name="M:Lms.Api.Controllers.GamesController.GetById(System.Int32)">
+            <summary>
+            Get game by Id
+            </summary>
+            <param name="id"></param>
+            <returns>An ActionResult</returns>
+            <response code="200">Returns a game by id</response>
+        </member>
+        <member name="M:Lms.Api.Controllers.GamesController.PostGame(Lms.Core.Models.Entities.Game)">
+            <summary>
+            Add a new game
+            </summary>
+            <param name="Game"></param>
+            <returns>An ActionResult</returns>
+            <response code="200">Returns created game</response>
+        </member>
+        <member name="M:Lms.Api.Controllers.GamesController.DeleteGame(System.Int32)">
+            <summary>
+            Delete a game by id
+            </summary>
+            <param name="id"></param>
+            <returns>Nothing</returns>
+        </member>
+    </members>
+</doc>

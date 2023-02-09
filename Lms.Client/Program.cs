@@ -1,7 +1,22 @@
+using Lms.Client.Clients;
+using System.Net.Http.Headers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//builder.Services.AddHttpClient();
+//builder.Services.AddHttpClient("LmsClient", client =>
+//{
+
+//    client.BaseAddress = new Uri("https://localhost:7165");
+//    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+//});
+
+
+builder.Services.AddHttpClient<LmsClient>();
 
 var app = builder.Build();
 

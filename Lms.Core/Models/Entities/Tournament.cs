@@ -1,18 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lms.Core.Models.Entities
+﻿namespace Lms.Core.Models.Entities
 {
+    /// <summary>
+    /// Base class for tournaments
+    /// </summary>
     public class Tournament
     {
+        /// <summary>
+        /// Tournament Id
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// Tournament title
+        /// </summary>
         public string Title { get; set; } = string.Empty;
+        /// <summary>
+        /// Tournament start date/time
+        /// </summary>
         public DateTime StartDate { get; set; }
+        /// <summary>
+        /// Tournament games
+        /// </summary>
         public ICollection<Game>? Games { get; set; }
     }
 }

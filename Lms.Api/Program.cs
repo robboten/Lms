@@ -3,9 +3,13 @@ using Lms.Core.Repositories;
 using Lms.Data;
 using Lms.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
+using System.Text;
 
 namespace Lms.Api
 {
+
     public class Program
     {
         public static async Task Main(string[] args)
@@ -17,10 +21,28 @@ namespace Lms.Api
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(setupAction =>
+            {
+                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+                setupAction.IncludeXmlComments(xmlCommentsFullPath);
+            }
+                );
             builder.Services.AddAutoMapper(typeof(LmsMappings));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<ValidateModelStateAttribute>();
+            builder.Services.AddAuthentication("Bearer").AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Authentication:Issuer"],
+                    ValidAudience = builder.Configuration["Authentication:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Authentication:SecretForKey"]))
+                };
+            });
 
             var app = builder.Build();
 
@@ -34,6 +56,7 @@ namespace Lms.Api
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
 

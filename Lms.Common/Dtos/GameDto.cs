@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace Lms.Common.Dtos
 {
+    /// <summary>
+    /// DTO for games
+    /// </summary>
     public class GameDto
     {
+        /// <summary>
+        /// Title of the game
+        /// </summary>
         public string Title { get; set; } = string.Empty;
+        /// <summary>
+        /// Start date/time for the game
+        /// </summary>
         public DateTime StartDate { get; set; }
     }
 }

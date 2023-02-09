@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Lms.Common</name>
+    </assembly>
+    <members>
+        <member name="T:Lms.Common.Dtos.GameDto">
+            <summary>
+            DTO for games
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.GameDto.Title">
+            <summary>
+            Title of the game
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.GameDto.StartDate">
+            <summary>
+            Start date/time for the game
+            </summary>
+        </member>
+    </members>
+</doc>

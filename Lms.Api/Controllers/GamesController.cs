@@ -7,6 +7,10 @@ using Newtonsoft.Json;
 
 namespace Lms.Api.Controllers
 {
+
+    /// <summary>
+    /// Api Controller for games
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class GamesController : ControllerBase
@@ -14,13 +18,25 @@ namespace Lms.Api.Controllers
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Constructor for controller handling games
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="mapper"></param>
         public GamesController(IUnitOfWork uow, IMapper mapper)
         {
             _uow = uow;
             _mapper = mapper;
         }
 
+
         // GET: api/Games
+        /// <summary>
+        /// Get all games
+        /// </summary>
+        /// <param name="GameParameters"></param>
+        /// <returns>IEnumberable of games</returns>
+        /// <response code="200">Returns list of games</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGame([FromQuery] GameParameters GameParameters)
         {
@@ -35,6 +51,12 @@ namespace Lms.Api.Controllers
         }
 
         // GET: api/Games/5
+        /// <summary>
+        /// Get game by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>An ActionResult</returns>
+        /// <response code="200">Returns a game by id</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetById(int id)
         {
@@ -81,6 +103,12 @@ namespace Lms.Api.Controllers
 
         // POST: api/Games
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Add a new game
+        /// </summary>
+        /// <param name="Game"></param>
+        /// <returns>An ActionResult</returns>
+        /// <response code="200">Returns created game</response>
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(Game Game)
         {
@@ -91,6 +119,11 @@ namespace Lms.Api.Controllers
         }
 
         // DELETE: api/Games/5
+        /// <summary>
+        /// Delete a game by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Nothing</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(int id)
         {

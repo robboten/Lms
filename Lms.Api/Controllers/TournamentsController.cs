@@ -3,6 +3,7 @@ using Lms.Api.Filters;
 using Lms.Common.Dtos;
 using Lms.Core.Models.Entities;
 using Lms.Core.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -11,6 +12,7 @@ namespace Lms.Api.Controllers
     [ServiceFilter(typeof(ValidateModelStateAttribute))]
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class TournamentsController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
