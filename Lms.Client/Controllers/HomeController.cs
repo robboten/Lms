@@ -2,6 +2,7 @@
 using Lms.Client.Models;
 using Lms.Common.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -12,26 +13,17 @@ namespace Lms.Client.Controllers
     public class HomeController : Controller
     {
 
-        private const string json = "application/json";
-        //private readonly HttpClient httpClient;
-        private readonly LmsClient httpClient;
-
-        // public HomeController(IHttpClientFactory httpClientFactory)
+        private readonly LmsClient _lmsClient;
         public HomeController(LmsClient lmsClient)
         {
-            // httpClient = httpClientFactory.CreateClient("LmsClient");
-            httpClient = lmsClient;
-            //httpClient = new HttpClient
-            //{
-            //    BaseAddress = new Uri("https://localhost:7165")
-            //};
-
+            _lmsClient = lmsClient;
         }
 
         public async Task<IActionResult> Index()
         {
-            var tournaments = await httpClient.GetWithItAsync();
-            return View(tournaments);
+            return View(await _lmsClient.GetWithItAsync<IEnumerable<TournamentDto>>("api/Tournaments"));
+            //return View(await _lmsClient.GetAllAsync());
+
         }
 
         public IActionResult Privacy()

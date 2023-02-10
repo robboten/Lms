@@ -4,6 +4,41 @@
         <name>Lms.Common</name>
     </assembly>
     <members>
+        <member name="T:Lms.Common.Dtos.CreateGameDto">
+            <summary>
+            Dto for creating game
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.CreateGameDto.Title">
+            <summary>
+            Game title
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.CreateGameDto.StartDate">
+            <summary>
+            Game start date/time
+            </summary>
+        </member>
+        <member name="T:Lms.Common.Dtos.CreateTournamentDto">
+            <summary>
+            Dto for creating Tournaments
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.CreateTournamentDto.Title">
+            <summary>
+            Tournament title
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.CreateTournamentDto.StartDate">
+            <summary>
+            Tournament start date
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.CreateTournamentDto.Games">
+            <summary>
+            List of games during the tournament
+            </summary>
+        </member>
         <member name="T:Lms.Common.Dtos.GameDto">
             <summary>
             DTO for games
@@ -17,6 +52,31 @@
         <member name="P:Lms.Common.Dtos.GameDto.StartDate">
             <summary>
             Start date/time for the game
+            </summary>
+        </member>
+        <member name="T:Lms.Common.Dtos.TournamentDto">
+            <summary>
+            Dto for tournament
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.TournamentDto.Title">
+            <summary>
+            Tournament Title
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.TournamentDto.StartDate">
+            <summary>
+            tournament starting date/time
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.TournamentDto.EndDate">
+            <summary>
+            tournament end date/time
+            </summary>
+        </member>
+        <member name="P:Lms.Common.Dtos.TournamentDto.Games">
+            <summary>
+            games during the tournament
             </summary>
         </member>
     </members>

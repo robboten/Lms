@@ -13,6 +13,7 @@ namespace Lms.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
+    [Produces("application/json")]
     public class TournamentsController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -26,7 +27,7 @@ namespace Lms.Api.Controllers
 
         // GET: api/Tournaments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament([FromQuery] TournamentParameters tournamentParameters)
+        public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournament([FromQuery] TournamentParameters tournamentParameters)
         {
             var tournaments = await _uow.TournamentRepository.GetAllAsync(tournamentParameters);
 
@@ -38,7 +39,7 @@ namespace Lms.Api.Controllers
 
         // GET: api/Tournaments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tournament>> GetById(int id, [FromQuery] TournamentParameters tournamentParameters)
+        public async Task<ActionResult<TournamentDto>> GetById(int id, [FromQuery] TournamentParameters tournamentParameters)
         {
             var tournament = await _uow.TournamentRepository.GetByIdAsync(id, tournamentParameters);
 
@@ -102,7 +103,7 @@ namespace Lms.Api.Controllers
         // POST: api/Tournaments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tournament>> PostTournament(CreateTournamentDto dto)
+        public async Task<ActionResult<TournamentDto>> PostTournament(CreateTournamentDto dto)
         {
             var newItem = _mapper.Map<Tournament>(dto);
 

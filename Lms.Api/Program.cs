@@ -23,9 +23,13 @@ namespace Lms.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(setupAction =>
             {
-                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
-                setupAction.IncludeXmlComments(xmlCommentsFullPath);
+                //var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+                //setupAction.IncludeXmlComments(xmlCommentsFullPath);
+                //var commonAssemblyXmlPath = Path.Combine(@"C:\Users\robbo\source\repos\Lms\Lms.Common\bin\Debug\net7.0\", "Lms.Common.xml");
+                //setupAction.IncludeXmlComments(commonAssemblyXmlPath);
+                List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
+                xmlFiles.ForEach(xmlFile => setupAction.IncludeXmlComments(xmlFile));
             }
                 );
             builder.Services.AddAutoMapper(typeof(LmsMappings));

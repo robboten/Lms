@@ -13,6 +13,7 @@ namespace Lms.Api.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class GamesController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -38,7 +39,7 @@ namespace Lms.Api.Controllers
         /// <returns>IEnumberable of games</returns>
         /// <response code="200">Returns list of games</response>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGame([FromQuery] GameParameters GameParameters)
+        public async Task<ActionResult<IEnumerable<GameDto>>> GetGame([FromQuery] GameParameters GameParameters)
         {
             var Games = await _uow.GameRepository.GetAllAsync(GameParameters);
 
@@ -58,7 +59,7 @@ namespace Lms.Api.Controllers
         /// <returns>An ActionResult</returns>
         /// <response code="200">Returns a game by id</response>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetById(int id)
+        public async Task<ActionResult<GameDto>> GetById(int id)
         {
             var Game = await _uow.GameRepository.GetByIdAsync(id);
 
@@ -106,16 +107,18 @@ namespace Lms.Api.Controllers
         /// <summary>
         /// Add a new game
         /// </summary>
-        /// <param name="Game"></param>
+        /// <param name="game"></param>
         /// <returns>An ActionResult</returns>
         /// <response code="200">Returns created game</response>
         [HttpPost]
-        public async Task<ActionResult<Game>> PostGame(Game Game)
+        public async Task<ActionResult<GameDto>> PostGame(CreateGameDto game)
         {
-            _uow.GameRepository.CreateGame(Game);
+            var newItem = _mapper.Map<Game>(game);
+            _uow.GameRepository.CreateGame(newItem);
+
             await _uow.CompleteAsync();
 
-            return CreatedAtAction("GetGame", new { id = Game.Id }, _mapper.Map<GameDto>(Game));
+            return CreatedAtAction("GetGame", new { id = newItem.Id }, _mapper.Map<GameDto>(newItem));
         }
 
         // DELETE: api/Games/5

@@ -72,11 +72,11 @@
             <returns>An ActionResult</returns>
             <response code="200">Returns a game by id</response>
         </member>
-        <member name="M:Lms.Api.Controllers.GamesController.PostGame(Lms.Core.Models.Entities.Game)">
+        <member name="M:Lms.Api.Controllers.GamesController.PostGame(Lms.Common.Dtos.CreateGameDto)">
             <summary>
             Add a new game
             </summary>
-            <param name="Game"></param>
+            <param name="game"></param>
             <returns>An ActionResult</returns>
             <response code="200">Returns created game</response>
         </member>

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS.Core;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -57,7 +55,7 @@ namespace Lms.Api.Controllers
         /// <exception cref="ArgumentNullException"></exception>
         public AuthenticationController(IConfiguration configuration)
         {
-            _configuration = configuration?? throw new ArgumentNullException(nameof(configuration));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         /// <summary>
@@ -76,7 +74,7 @@ namespace Lms.Api.Controllers
                 return Unauthorized();
             }
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Authentication:SecretForKey"]));
-            var signingCredentials = new SigningCredentials(securityKey,SecurityAlgorithms.HmacSha256);
+            var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claimsForToken = new List<Claim>
             {
                 new Claim("sub", user.Id.ToString()),

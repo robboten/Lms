@@ -1,16 +1,22 @@
-﻿using System.Net.Http.Headers;
+﻿using Lms.Common.Dtos;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace Lms.Client.Clients
 {
-    public class LmsClient
+    public abstract class BaseClient
     {
-        private readonly HttpClient _httpClient;
-        public LmsClient(HttpClient httpClient)
+        protected HttpClient HttpClient { get;  }
+        public BaseClient(HttpClient httpClient)
         {
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7165");
-            //_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpClient = httpClient;
+            HttpClient.BaseAddress = new Uri("https://localhost:7165");
+        }
+
+        public BaseClient(HttpClient httpClient, Uri uri) : this(httpClient) 
+        {
+            httpClient.BaseAddress = uri;
         }
 
         public async Task<T?> GetWithItAsync<T>(string path, string contentType = "application/json")
@@ -18,7 +24,7 @@ namespace Lms.Client.Clients
             var request = new HttpRequestMessage(HttpMethod.Get, path);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
 
-            var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
             response.EnsureSuccessStatusCode();
 
