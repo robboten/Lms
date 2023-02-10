@@ -12,6 +12,10 @@ namespace Lms.Common.Dtos
     public class GameDto
     {
         /// <summary>
+        /// game id
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
         /// Title of the game
         /// </summary>
         public string Title { get; set; } = string.Empty;

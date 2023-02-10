@@ -4,7 +4,6 @@ using Lms.Data;
 using Lms.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
 using System.Text;
 
 namespace Lms.Api
@@ -25,9 +24,6 @@ namespace Lms.Api
             {
                 //var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 //var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
-                //setupAction.IncludeXmlComments(xmlCommentsFullPath);
-                //var commonAssemblyXmlPath = Path.Combine(@"C:\Users\robbo\source\repos\Lms\Lms.Common\bin\Debug\net7.0\", "Lms.Common.xml");
-                //setupAction.IncludeXmlComments(commonAssemblyXmlPath);
                 List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
                 xmlFiles.ForEach(xmlFile => setupAction.IncludeXmlComments(xmlFile));
             }
@@ -59,7 +55,7 @@ namespace Lms.Api
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();

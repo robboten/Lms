@@ -8,6 +8,10 @@ namespace Lms.Common.Dtos
     public class TournamentDto
     {
         /// <summary>
+        /// Tournament Id
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
         /// Tournament Title
         /// </summary>
         [Required]
